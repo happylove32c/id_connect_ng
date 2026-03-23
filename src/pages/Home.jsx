@@ -1,5 +1,5 @@
 import { Bolt, CreditCard, Car, GraduationCap, ArrowRight, CheckCircle, Shield, Zap, Building2 } from "lucide-react";
-import logo from "../../public/interswitch_logo.png";
+import logo from "/interswitch_logo.png";
 
 function Home() {
   return (
