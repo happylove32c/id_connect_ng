@@ -3,6 +3,8 @@ import Navbar_dash from "../components/Navbar_dash";
 import { useState } from "react";
 import UtilityModal from "../components/modals/UtilityModal";
 import LicensePage from "../components/LicensePage";
+import { Link } from "react-router-dom";
+
 
 function Dashboard() {
   const [openUtility, setOpenUtility] = useState(false);
@@ -85,9 +87,9 @@ function Dashboard() {
               <p className="text-gray-600 text-sm mb-3">
                 WAEC Verified ✅
               </p>
-              <button className="text-sm text-black font-medium">
-                View Records →
-              </button>
+              <Link to="/records" className="text-sm text-black font-medium">
+                View Details →
+              </Link>
             </div>
 
           </div>
