@@ -1,27 +1,63 @@
-import React from 'react'
-import Home from './pages/Home'
-import Dashboard from './pages/Dashboard'
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import EducationPage from './pages/EducationPage';
-import { Toaster } from 'react-hot-toast';
-import LicensePage from './pages/LicensePage';
+import React from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-export default function App() {
-    const licenseData = {
-      name: "John Doe",
-      number: "DL-1234-5678",
-      expiry: "2026-02-03"
-    };
-  return (
-    <BrowserRouter>
-    <Toaster position="top-center" reverseOrder={false} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/records" element={<EducationPage />} />
-        <Route path="/license" element={<LicensePage license={licenseData} />} />
-      </Routes>
-    </BrowserRouter>
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import AuthPage from "./pages/AuthPage";
+import Dashboard from "./pages/Dashboard";
 
-  )
+// Protect routes
+function ProtectedRoute({ children }) {
+  const { user, loading } = useAuth();
+
+  if (loading) return <p>Loading...</p>;
+
+  return user ? children : <Navigate to="/auth" />;
 }
+
+// Prevent logged-in users from seeing auth page
+function PublicRoute({ children }) {
+  const { user, loading } = useAuth();
+
+  if (loading) return <p>Loading...</p>;
+
+  return !user ? children : <Navigate to="/dashboard" />;
+}
+
+function AppRoutes() {
+  return (
+    <Routes>
+      <Route
+        path="/auth"
+        element={
+          <PublicRoute>
+            <AuthPage />
+          </PublicRoute>
+        }
+      />
+
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* default route */}
+      <Route path="*" element={<Navigate to="/dashboard" />} />
+    </Routes>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </AuthProvider>
+  );
+}
+
+export default App;
